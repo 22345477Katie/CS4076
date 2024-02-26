@@ -27,7 +27,9 @@ public class App extends Application {
   static final int PORT = 1234;
   Label label = new Label("Response From Server Will Display Here");
   TextField textField = new TextField("");
-  Button button = new Button("Send");
+  Button buttonAdd = new Button("Add class");
+  Button buttonRemove = new Button("Remove class");
+  Button buttonDisplay = new Button("Display schedule");
 
     @Override
     public void start(Stage stage) {
