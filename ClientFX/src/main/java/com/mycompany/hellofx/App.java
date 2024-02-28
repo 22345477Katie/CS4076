@@ -26,19 +26,23 @@ public class App extends Application {
   static InetAddress host;
   static final int PORT = 1234;
   Label label = new Label("Response From Server Will Display Here");
-  TextField textField = new TextField("");
+  Label labelDisplay;
+  TextField textFieldRoomDisplay;
   Button buttonAdd = new Button("Add class");
   Button buttonRemove = new Button("Remove class");
   Button buttonDisplay = new Button("Display schedule");
+  Button confirmDisplay;
 
     @Override
     public void start(Stage stage) {
 
+        
+        VBox box= new VBox( buttonAdd, buttonRemove, buttonDisplay, label);
+        var scene = new Scene(box, 640, 480);
 
         
         
-        
-        button.setOnAction(new EventHandler<ActionEvent>() {
+        buttonDisplay.setOnAction(new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent t) {
             try 
@@ -50,47 +54,76 @@ public class App extends Application {
                System.out.println("Host ID not found!");
                System.exit(1);
             }
-           Socket link = null;				
-           try 
-           {
-               link = new Socket(host,PORT);		
-               //link = new Socket( "192.168.0.59", PORT);
-               BufferedReader in = new BufferedReader(new InputStreamReader(link.getInputStream()));
-               PrintWriter out = new PrintWriter(link.getOutputStream(),true);	
-
-               String message = null;
-               String response= null;
-
-               System.out.println("Enter message to be sent to server: ");
-               message =  textField.getText().toString();
-               out.println(message); 		
-               response = in.readLine();		
-               label.setText(response);
-           } 
-           catch(IOException e)
-           {
-               e.printStackTrace();
-           } 
-           finally 
-           {
-               try 
-               {
-                   System.out.println("\n* Closing connection... *");
-                   link.close();				//Step 4.
-               }catch(IOException e)
-               {
-                   System.out.println("Unable to disconnect/close!");
-                   System.exit(1);
+           
+           //Opening a new window for the selected action
+           //Box with the necessary information
+           labelDisplay = new Label ("From what class would you like to see the schedule ?"); 
+           textFieldRoomDisplay = new TextField("");
+           confirmDisplay = new Button ("Show schedule");
+           
+           //Button back to home
+                        
+            Button buttonHome = new Button ("Back to home");
+            buttonHome.setOnAction(new EventHandler<ActionEvent> (){
+                            
+                @Override
+                public void handle(ActionEvent t){
+                    stage.setScene(scene);
+                }
+            });
+                        
+           
+           //Action on the confirm button
+           confirmDisplay.setOnAction(new EventHandler<ActionEvent> () {
+               
+               @Override
+               public void handle(ActionEvent t){
+                    try 
+                    {
+                        Socket link = new Socket(host,PORT);
+                        BufferedReader in = new BufferedReader(new InputStreamReader(link.getInputStream()));
+                        PrintWriter out = new PrintWriter(link.getOutputStream(),true);
+                        
+                        
+                        String response= null;
+                        
+                        System.out.println("Enter message to be sent to server: ");
+                        String message = textFieldRoomDisplay.getText();
+                        out.println(message);
+                        response = in.readLine();
+                        label.setText(response);
+                        
+                        
+                        try
+                        {
+                            System.out.println("\n* Closing connection... *");
+                            link.close();
+                        }catch(IOException e)
+                        {
+                            System.out.println("Unable to disconnect/close!");
+                            System.exit(1);
+                        }
+                    }catch(IOException ex)
+                    {
+                        ex.printStackTrace();
+                    }
+                    finally
+                    {
+                        
+                    }
                }
-           }
+           });
+           
+                              
+            VBox box = new VBox(labelDisplay, textFieldRoomDisplay, confirmDisplay, label, buttonHome);
+            var sceneDisplay = new Scene(box, 640, 480);
+            stage.setScene(sceneDisplay);
+           
+
+           
         }});
         
         
-        
-        
-        
-        VBox box= new VBox( textField, button, label);
-        var scene = new Scene(box, 640, 480);
         stage.setScene(scene);
         stage.show();
     }
