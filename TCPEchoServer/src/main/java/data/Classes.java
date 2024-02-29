@@ -8,7 +8,7 @@ package data;
  *
  * @author traug
  */
-public class Class {
+public class Classes {
     public enum DaysOfTheWeek{
         Monday,
         Tuesday,
@@ -21,15 +21,25 @@ public class Class {
     DaysOfTheWeek day;
     int startingTime;
     int endingTime;
+    String room;
 
-    public Class() {
+    public Classes() {
     }
 
-    public Class(String classCode, DaysOfTheWeek day, int startingTime, int endingTime) {
+    public Classes(String classCode, DaysOfTheWeek day, int startingTime, int endingTime, String room) {
         this.classCode = classCode;
         this.day = day;
         this.startingTime = startingTime;
         this.endingTime = endingTime;
+        this.room = room;
+    }
+
+    public String getRoom() {
+        return room;
+    }
+
+    public void setRoom(String room) {
+        this.room = room;
     }
 
     public String getClassCode() {

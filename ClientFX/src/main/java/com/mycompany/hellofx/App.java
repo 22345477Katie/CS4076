@@ -68,8 +68,8 @@ public class App extends Application {
                             
                 @Override
                 public void handle(ActionEvent t){
-                    stage.setScene(scene);
-                }
+                        stage.setScene(scene);
+                    }
             });
                         
            
@@ -78,38 +78,50 @@ public class App extends Application {
                
                @Override
                public void handle(ActionEvent t){
-                    try 
-                    {
-                        Socket link = new Socket(host,PORT);
-                        BufferedReader in = new BufferedReader(new InputStreamReader(link.getInputStream()));
-                        PrintWriter out = new PrintWriter(link.getOutputStream(),true);
-                        
-                        
-                        String response= null;
-                        
-                        System.out.println("Enter message to be sent to server: ");
-                        String message = textFieldRoomDisplay.getText();
-                        out.println(message);
-                        response = in.readLine();
-                        label.setText(response);
-                        
-                        
-                        try
+                    if(textFieldRoomDisplay.getText().trim().isEmpty()){
+                        label.setText("Please enter the class code !");
+                    } else {
+                        try 
                         {
-                            System.out.println("\n* Closing connection... *");
-                            link.close();
-                        }catch(IOException e)
+                            Socket link = new Socket(host,PORT);
+                            BufferedReader in = new BufferedReader(new InputStreamReader(link.getInputStream()));
+                            PrintWriter out = new PrintWriter(link.getOutputStream(),true);
+
+
+                            String response= null;
+
+                            System.out.println("Enter message to be sent to server: ");
+                            String classCode = textFieldRoomDisplay.getText();
+                            // 2 for the action, the / is to split the texts
+                            out.println("2/" + classCode);
+                            response = in.readLine();
+                            String[] foundClasses = response.split("-");
+                            if(foundClasses[0].equals("CLASS")){
+                                //A class or more has been found with this code
+                                label.setText("Displaying the schedule for the class " + classCode);
+                            } else {
+                                //No class has been found with this code
+                                label.setText(response);
+                            }
+
+
+                            try
+                            {
+                                System.out.println("\n* Closing connection... *");
+                                link.close();
+                            }catch(IOException e)
+                            {
+                                System.out.println("Unable to disconnect/close!");
+                                System.exit(1);
+                            }
+                        }catch(IOException ex)
                         {
-                            System.out.println("Unable to disconnect/close!");
-                            System.exit(1);
+                            ex.printStackTrace();
                         }
-                    }catch(IOException ex)
-                    {
-                        ex.printStackTrace();
-                    }
-                    finally
-                    {
-                        
+                        finally
+                        {
+
+                        }
                     }
                }
            });
