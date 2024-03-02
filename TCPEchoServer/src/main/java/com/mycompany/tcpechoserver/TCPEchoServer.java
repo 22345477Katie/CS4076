@@ -75,7 +75,7 @@ public class TCPEchoServer {
       if(action == "consult"){
           
           //TEST
-          Classes classTest = new Classes("CS4076", Classes.DaysOfTheWeek.Monday, 9, 11, "CS2044");
+          Classes classTest = new Classes("CS4076", 1, 9, 11, "CS2044");
           classes.add(classTest);
           //
           
@@ -90,14 +90,14 @@ public class TCPEchoServer {
                 if(classes.get(i).getClassCode().equals(classCode)){
                     schedule += "-" + classes.get(i).getClassCode() + "/"
                             + classes.get(i).getRoom() + "/" +
-                            classes.get(i).getDay().toString() + "/" +
+                            classes.get(i).getDay() + "/" +
                             classes.get(i).getStartingTime() + "/" +
                             classes.get(i).getEndingTime();
                 }
                 System.out.println("Class " + classes.get(i).getClassCode() + 
                         " in room " + classes.get(i).getRoom() + " starting at " +
                         classes.get(i).getStartingTime() + " until " + classes.get(i).getEndingTime()
-                        + " on " + classes.get(i).getDay().toString());
+                        + " on " + classes.get(i).getDay());
             }
             if(schedule.equals("CLASS")){
                 schedule = "No class found with this code";

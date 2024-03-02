@@ -11,6 +11,10 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.geometry.HPos;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -18,6 +22,16 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.RowConstraints;
+import javafx.scene.paint.Color;
 
 
 /**
@@ -192,9 +206,113 @@ public class App extends Application {
                             out.println("2/" + classCode);
                             response = in.readLine();
                             String[] foundClasses = response.split("-");
+                            
                             if(foundClasses[0].equals("CLASS")){
+                                
                                 //A class or more has been found with this code
                                 label.setText("Displaying the schedule for the class " + classCode);
+                                
+                                GridPane gridPane = new GridPane();
+                                gridPane.setPadding(new Insets(10, 10, 10, 10)); // Padding around the grid
+                                
+                                gridPane.setGridLinesVisible(true);
+                              
+                                // Set the GridPane to expand and fill the available space, equalizing column widths
+                                ColumnConstraints columnConstraints = new ColumnConstraints();
+                                columnConstraints.setPercentWidth(90.0 / 5); //Having 5 days during the week
+                                gridPane.getColumnConstraints().addAll(columnConstraints, 
+                                        columnConstraints, columnConstraints, 
+                                        columnConstraints, columnConstraints,
+                                        columnConstraints);
+                                
+                                //Row constraints
+                                RowConstraints rowConstraints = new RowConstraints();
+                                rowConstraints.setPercentHeight(80.0 / 10); //Having 10 timeslots in a day
+                                
+                                gridPane.getRowConstraints().addAll(rowConstraints, 
+                                        rowConstraints, rowConstraints, rowConstraints, 
+                                        rowConstraints, rowConstraints, rowConstraints, 
+                                        rowConstraints, rowConstraints, rowConstraints, 
+                                        rowConstraints);
+                                
+                                // Days of the week headers
+                                String[] daysOfWeek = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
+                                for (int i = 0; i < daysOfWeek.length; i++) {
+                                    Label dayLabel = new Label(daysOfWeek[i]);
+                                    dayLabel.setAlignment(Pos.CENTER); // Center align the text
+                                    dayLabel.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE); // Allow the label to expand fully
+                                    GridPane.setFillWidth(dayLabel, true); // Stretch label to fill cell width
+                                    GridPane.setFillHeight(dayLabel, true); // Stretch label to fill cell height
+                                    dayLabel.setStyle("-fx-background-color: #002633; "
+                                            + "-fx-text-fill: #ffffff; "
+                                            + "-fx-border-color: black;"
+                                            + "-fx-border-width: 1;"
+                                            + "-fx-border-style: solid;");
+                                    GridPane.setHalignment(dayLabel, HPos.CENTER); // Center align the label within the grid cell
+                                    GridPane.setValignment(dayLabel, VPos.CENTER); // Vertically center the label within the grid cell
+                                    gridPane.add(dayLabel, i + 1, 0); // Offset by 1 to leave room for the time column
+                                }
+
+                                // Time slots
+                                String[] timeSlots = {"9:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"};
+                                for (int i = 0; i < timeSlots.length; i++) {
+                                    Label timeLabel = new Label(timeSlots[i]);
+                                    timeLabel.setAlignment(Pos.CENTER); // Center align the text
+                                    timeLabel.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE); // Allow the label to expand fully
+                                    GridPane.setFillWidth(timeLabel, true); // Stretch label to fill cell width
+                                    GridPane.setFillHeight(timeLabel, true); // Stretch label to fill cell height
+                                    timeLabel.setStyle("-fx-background-color: #002633; "
+                                            + "-fx-text-fill: #ffffff; "
+                                            + "-fx-border-color: black;"
+                                            + "-fx-border-width: 1;"
+                                            + "-fx-border-style: solid;");
+                                    GridPane.setHalignment(timeLabel, HPos.CENTER); // Center align the label within the grid cell
+                                    GridPane.setValignment(timeLabel, VPos.CENTER); // Vertically center the label within the grid cell
+                                    gridPane.add(timeLabel, 0, i + 1); // Offset by 1 to leave room for the days row
+                                }
+                                
+                                for(int i = 1; i < foundClasses.length; i ++){
+                                    //We start at 1 because 0 is taken by "CLASS"
+                                    String myClass[] = foundClasses[i].split("/");
+                                    String code = myClass[0];
+                                    String room = myClass[1];
+                                    int day = Integer.valueOf(myClass[2]);
+                                    int startingTime = Integer.valueOf(myClass[3]);
+                                    int endingTime = Integer.valueOf(myClass[4]);
+                                    
+                                    Label myClassLabel = new Label(code + "\n(" + room + ")");
+                                    myClassLabel.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE); // Allow the label to expand fully
+                                    GridPane.setFillWidth(myClassLabel, true); // Stretch label to fill cell width
+                                    GridPane.setFillHeight(myClassLabel, true); // Stretch label to fill cell height
+                                    myClassLabel.setStyle("-fx-background-color: #ffcc99; "
+                                            + "-fx-alignment: center; "
+                                            + "-fx-border-color: black;"
+                                            + "-fx-border-width: 1;"
+                                            + "-fx-border-style: solid;");
+                                    gridPane.add(myClassLabel, day, startingTime-8, 1, endingTime - startingTime);
+                                }
+
+                                
+                                //Button back to home
+                        
+                                Button buttonHome = new Button ("Back to home");
+                                buttonHome.setOnAction(new EventHandler<ActionEvent> (){
+
+                                    @Override
+                                    public void handle(ActionEvent t){
+                                            stage.setScene(scene);
+                                        }
+                                });
+
+                                // Setting the scene
+                                VBox boxSchedule = new VBox();
+                                // Add GridPane and Button to the VBox
+                                boxSchedule.getChildren().addAll(gridPane, buttonHome);
+                                // Set the VBox to stretch the GridPane vertically to take up all available space
+                                VBox.setVgrow(gridPane, Priority.ALWAYS);
+                                
+                                var sceneDisplay = new Scene(boxSchedule, 800, 600);
+                                stage.setScene(sceneDisplay);
                             } else {
                                 //No class has been found with this code
                                 label.setText(response);
@@ -235,6 +353,7 @@ public class App extends Application {
         stage.setScene(scene);
         stage.show();
     }
+    
 
     public static void main(String[] args) {
         launch();
