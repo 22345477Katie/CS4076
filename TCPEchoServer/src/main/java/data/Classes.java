@@ -42,12 +42,12 @@ public class Classes {
     public void setClassCode(String classCode) {
         this.classCode = classCode;
     }
-    
-    public int getDay(){
+
+    public int getDay() {
         return day;
     }
-    
-    public void setDay (int day){
+
+    public void setDay(int day) {
         this.day = day;
     }
 
