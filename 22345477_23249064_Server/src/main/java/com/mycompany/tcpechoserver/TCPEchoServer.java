@@ -8,6 +8,8 @@ import data.Classes;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  *
@@ -19,7 +21,7 @@ public class TCPEchoServer {
   private static int clientConnections = 0;
   private static ArrayList<Classes> classes;
   private static ArrayList<String> moduleCodes;
-  private static Socket link = null;
+  private static final Lock lock = new ReentrantLock();
 
   public static void main(String[] args) {
         System.out.println("Opening port...\n");
@@ -61,6 +63,16 @@ public class TCPEchoServer {
 
     public static void setModuleCodes(ArrayList<String> moduleCodes) {
         TCPEchoServer.moduleCodes = moduleCodes;
+    }
+    
+    public static void lockData(){
+        System.out.println("Locking");
+        lock.lock();
+    }
+    
+    public static void unlockData(){
+        System.out.println("Unlocking");
+        lock.unlock();
     }
   
   
