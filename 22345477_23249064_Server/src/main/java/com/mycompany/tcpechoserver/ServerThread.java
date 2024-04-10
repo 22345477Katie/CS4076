@@ -22,6 +22,7 @@ public class ServerThread implements Runnable {
 
     private Socket link;
     private int nclient;
+    ArrayList<Classes> classes;
     
     public ServerThread(Socket link, int nClient) {
         this.link = link;
@@ -31,9 +32,8 @@ public class ServerThread implements Runnable {
     
     public void run()
     {
-        System.out.println("New thread running");
-        
-        ArrayList<Classes> classes = TCPEchoServer.getClasses();
+        System.out.println("New thread  = TCPrunning");
+        classes = TCPEchoServer.getClasses();
         ArrayList<String> moduleCodes = TCPEchoServer.getModuleCodes();
         
         try{
@@ -63,6 +63,9 @@ public class ServerThread implements Runnable {
                         action = "consult";
                         break;
                     case "3":
+                        action = "earlyLectures";
+                        break;
+                    case "4":
                         action = "quit";
                         break;
                     default:
@@ -76,7 +79,7 @@ public class ServerThread implements Runnable {
                   try{
                       //Figure out what day it is and make it an int for easier processing
                         int day;
-                      switch (actionClient[2]) {
+                      switch (actionClient[3]) {
                           case "Monday":
                               day = 1;
                               break;
@@ -95,15 +98,15 @@ public class ServerThread implements Runnable {
                       }
 
                       //Create the Classes object
-                      Classes scheduledClass = new Classes(actionClient[1], day, Integer.parseInt(actionClient[3]), Integer.parseInt(actionClient[4]), actionClient[5]);
+                      Classes scheduledClass = new Classes(actionClient[1], actionClient[2], day, Integer.parseInt(actionClient[4]), Integer.parseInt(actionClient[5]), actionClient[6]);
 
                       //Ensure the times are valid
-                      if(Integer.parseInt(actionClient[4])<=Integer.parseInt(actionClient[3])){
+                      if(Integer.parseInt(actionClient[5])<=Integer.parseInt(actionClient[4])){
                           throw new IncorrectActionException("The class end time must be after the start time. Class not scheduled.");
                       }
 
-
                       //If there are already classes scheduled
+                      
                       if(classes.isEmpty()==false){
                           if(moduleCodes.contains(scheduledClass.getClassCode())==false && moduleCodes.size()>=5){
                               //If the list of modules already being taken doesn't contain the given code and there are 5 or more modules already
@@ -111,7 +114,8 @@ public class ServerThread implements Runnable {
                           }
                           for (int i = 0; i<classes.size(); i++){
                               //check if the class clashes with any others already scheduled
-                              if(scheduledClass.getDay()==classes.get(i).getDay()){
+                              if(scheduledClass.getCourseCode().equals(classes.get(i).getCourseCode())
+                                      && scheduledClass.getDay()==classes.get(i).getDay()){
                                   int newStartTime = scheduledClass.getStartingTime();
                                   int newEndTime = scheduledClass.getEndingTime();
                                   int oldStartTime = classes.get(i).getStartingTime();
@@ -143,7 +147,7 @@ public class ServerThread implements Runnable {
                     try{
                         //Figure out what day it is and make it an int for easier processing
                         int day;
-                      switch (actionClient[2]) {
+                      switch (actionClient[3]) {
                           case "Monday":
                               day = 1;
                               break;
@@ -161,14 +165,16 @@ public class ServerThread implements Runnable {
                               break;
                       }
                       //Create the Classes object
-                      Classes scheduledClass = new Classes(actionClient[1], day, Integer.parseInt(actionClient[3]), Integer.parseInt(actionClient[4]), actionClient[5]);
+                      Classes scheduledClass = new Classes(actionClient[1], actionClient[2], day, Integer.parseInt(actionClient[4]), Integer.parseInt(actionClient[5]), actionClient[6]);
                       //No point in checking anything if there aren't any classes yet
+                      
                       if(classes.isEmpty()){
                           throw new IncorrectActionException("There are currently no scheduled classes to be removed");
                       }
                       //Check if any of the classes in the ArrayList exactly match what is given, allowing for extra spaces with the .trim()
                       for(int i = 0; i<classes.size(); i++){
-                          if(scheduledClass.getClassCode().trim().equals(classes.get(i).getClassCode())
+                          if(scheduledClass.getCourseCode().equals(classes.get(i).getCourseCode())
+                                  && scheduledClass.getClassCode().trim().equals(classes.get(i).getClassCode())
                                   &&scheduledClass.getDay()==classes.get(i).getDay()
                                   &&scheduledClass.getStartingTime()==classes.get(i).getStartingTime()
                                   &&scheduledClass.getEndingTime()==classes.get(i).getEndingTime()
@@ -191,16 +197,18 @@ public class ServerThread implements Runnable {
                     //Classes classTest = new Classes("CS4076", 1, 9, 11, "CS2044");
                     //classes.add(classTest);
                     //
+                    
+                    //May need to restructure a little?
 
                     if(classes.isEmpty()){
-                        out.println("The schedule is empty ! Add a class first.");
+                        out.println("The schedule is empty! Add a class first.");
                     } else if (actionClient.length < 1){
                         out.println("No class code found");
                     } else {
                       String classCode = actionClient[1];
                       String schedule = "CLASS";
                       for(int i = 0; i < classes.size(); i ++){
-                          if(classes.get(i).getClassCode().equals(classCode)){
+                          if(classes.get(i).getCourseCode().equals(classCode)){
                               schedule += "-" + classes.get(i).getClassCode() + "/"
                                       + classes.get(i).getRoom() + "/" +
                                       classes.get(i).getDay() + "/" +
@@ -213,10 +221,58 @@ public class ServerThread implements Runnable {
                                   + " on " + classes.get(i).getDay());
                       }
                       if(schedule.equals("CLASS")){
-                          schedule = "No class found with this code";
+                          schedule = "No course found with this code";
                       }
                       out.println(schedule);
                     }
+                }
+                
+                if(action.equals("earlyLectures")){
+                  try{
+                      //Figure out what day it is and make it an int for easier processing
+                        int day;
+                      switch (actionClient[2]) {
+                          case "Monday":
+                              day = 1;
+                              break;
+                          case "Tuesday":
+                              day = 2;
+                              break;
+                          case "Wednesday":
+                              day = 3;
+                              break;
+                          case "Thursday":
+                              day = 4;
+                              break;
+                          default:
+                              day = 5;
+                              break;
+                      }
+
+
+                      //If there are already classes scheduled
+                      ArrayList<Classes> dayClasses = new ArrayList<Classes>();
+                      ArrayList<Classes> dayClassesSorted = new ArrayList<Classes>();
+                      
+                      if(classes.isEmpty()==false){
+                          for (int i = 0; i<classes.size(); i++){
+                              if(classes.get(i).getCourseCode().equals(actionClient[1]) && day == classes.get(i).getDay()){
+                                  dayClasses.add(classes.get(i));
+                              }                                          
+                          }
+                          
+                          for (int i = 0; i<dayClasses.size(); i++){
+                              
+                          }
+                          
+                          message = "The class was added to the schedule successfully."; 
+                      }else{
+                          throw new IncorrectActionException("There are no classes to move to an earlier session.");
+                      }
+                  }catch (IncorrectActionException e){
+                      message = e.getIncorrectActionException();
+
+                  }  
                 }
 
                 if(action.equals("quit")){

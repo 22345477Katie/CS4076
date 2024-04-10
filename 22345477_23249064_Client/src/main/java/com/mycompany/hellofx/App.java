@@ -43,6 +43,7 @@ public class App extends Application {
   //Add Screen
   Label classLabel;
   Label titleAdd;
+  TextField courseCode;
   TextField moduleCode;
   ChoiceBox dayOfWeek;
   ChoiceBox startTime;
@@ -67,6 +68,13 @@ public class App extends Application {
   String transmission;
   Button buttonDisplay = new Button("Display schedule");
   Button confirmDisplay;
+  
+  //Early Lectures
+  Button buttonEarlyLectures = new Button("Early Lectures");
+  Button confirmEarlyLectures;
+  TextField courseCodeEarlyLectures;
+  Label titleEarlyLectures;
+  ChoiceBox earlyLecturesDay;
 
   //Quit
   Button buttonQuit = new Button("STOP");
@@ -80,9 +88,10 @@ public class App extends Application {
         buttonAdd.setStyle("-fx-background-color: #002633; -fx-text-fill: #ffffff; -fx-font-weight: bold");
         buttonRemove.setStyle("-fx-background-color: #002633; -fx-text-fill: #ffffff;  -fx-font-weight: bold");
         buttonDisplay.setStyle("-fx-background-color: #002633; -fx-text-fill: #ffffff;  -fx-font-weight: bold");
+        buttonEarlyLectures.setStyle("-fx-background-color: #002633; -fx-text-fill: #ffffff;  -fx-font-weight: bold");
         buttonQuit.setStyle("-fx-background-color: #002633; -fx-text-fill: #ffffff;  -fx-font-weight: bold");
         //label.setStyle("-fx-text-style: italic");
-        VBox box= new VBox(title, buttonAdd, buttonRemove, buttonDisplay, buttonQuit /* label*/);
+        VBox box= new VBox(title, buttonAdd, buttonRemove, buttonDisplay, buttonEarlyLectures, buttonQuit /* label*/);
         box.setAlignment(Pos.CENTER);
         box.setSpacing(20);
         var scene = new Scene(box, 640, 480);
@@ -101,7 +110,8 @@ public class App extends Application {
               //Nodes/input
               titleAdd = new Label("Add Class");
               classLabel = new Label ("Please enter the following details about the class you wish to add.");
-              moduleCode = new TextField("Module code (eg. CS4076)");
+              courseCode = new TextField("Course Code (eg. LM051)");
+              moduleCode = new TextField("Module Code (eg. CS4076)");
               dayOfWeek = new ChoiceBox();
               dayOfWeek.getItems().add("Monday");
               dayOfWeek.getItems().add("Tuesday");
@@ -146,7 +156,7 @@ public class App extends Application {
 
                         String[] startTimeSplit = startTime.getValue().toString().split(":");
                         String[] endTimeSplit = endTime.getValue().toString().split(":");
-                        String message = "0/"+ moduleCode.getText()+"/"+dayOfWeek.getValue()+"/"+startTimeSplit[0]+"/"+endTimeSplit[0]+"/"+roomCode.getText();
+                        String message = "0/"+ courseCode.getText() + "/" + moduleCode.getText()+"/"+dayOfWeek.getValue()+"/"+startTimeSplit[0]+"/"+endTimeSplit[0]+"/"+roomCode.getText();
                         out.println(message);
                         response = in.readLine();
                         label.setText(response);
@@ -180,7 +190,7 @@ public class App extends Application {
             rowConstraintsContent.setPercentHeight(80.0 / 1);
 
             content.getRowConstraints().addAll(rowConstraintsContent, rowConstraintsContent,
-                    rowConstraintsContent, rowConstraintsContent, rowConstraintsContent, rowConstraintsContent);
+                    rowConstraintsContent, rowConstraintsContent, rowConstraintsContent, rowConstraintsContent, rowConstraintsContent);
 
             content.setPadding(new Insets(10, 10, 10, 10));
 
@@ -232,50 +242,54 @@ public class App extends Application {
             content.add(classLabel, 0, 1);
             GridPane.setHalignment(classLabel, HPos.CENTER);
             GridPane.setValignment(classLabel, VPos.CENTER);
+            
+            content.add(courseCode, 0, 2);
+            GridPane.setHalignment(courseCode, HPos.CENTER);
+            GridPane.setValignment(courseCode, VPos.CENTER);
 
-            content.add(moduleCode, 0, 2);
+            content.add(moduleCode, 0, 3);
             GridPane.setHalignment(moduleCode, HPos.CENTER);
             GridPane.setValignment(moduleCode, VPos.CENTER);
 
             chooseDay = new Label("Please choose the day the class will occur on.");
-            content.add(chooseDay, 0, 3);
+            content.add(chooseDay, 0, 4);
             GridPane.setHalignment(chooseDay, HPos.LEFT);
             GridPane.setValignment(chooseDay, VPos.CENTER);
 
-            content.add(dayOfWeek, 0, 3);
+            content.add(dayOfWeek, 0, 4);
             GridPane.setHalignment(dayOfWeek, HPos.RIGHT);
             GridPane.setValignment(dayOfWeek, VPos.CENTER);
 
             chooseStart = new Label("Please choose the time the class will START at.");
-            content.add(chooseStart, 0, 4);
+            content.add(chooseStart, 0, 5);
             GridPane.setHalignment(chooseStart, HPos.LEFT);
             GridPane.setValignment(chooseStart, VPos.CENTER);
 
-            content.add(startTime, 0, 4);
+            content.add(startTime, 0, 5);
             GridPane.setHalignment(startTime, HPos.RIGHT);
             GridPane.setValignment(startTime, VPos.CENTER);
 
             chooseEnd = new Label("Please choose the time the class will END at.");
-            content.add(chooseEnd, 0, 5);
+            content.add(chooseEnd, 0, 6);
             GridPane.setHalignment(chooseEnd, HPos.LEFT);
             GridPane.setValignment(chooseEnd, VPos.CENTER);
 
-            content.add(endTime, 0, 5);
+            content.add(endTime, 0, 6);
             GridPane.setHalignment(endTime, HPos.RIGHT);
             GridPane.setValignment(endTime, VPos.CENTER);
 
-            content.add(roomCode, 0, 6);
+            content.add(roomCode, 0, 7);
             GridPane.setHalignment(roomCode, HPos.CENTER);
             GridPane.setValignment(roomCode, VPos.CENTER);
 
             confirmAdd.setStyle("-fx-text-fill: #002633; -fx-border-color: #002633");
 
-            content.add(confirmAdd, 0,7);
+            content.add(confirmAdd, 0,8);
             GridPane.setHalignment(confirmAdd, HPos.CENTER);
             GridPane.setValignment(confirmAdd, VPos.CENTER);
 
             buttonHome.setStyle("-fx-background-color: #002633; -fx-text-fill: #ffffff; -fx-font-weight: bold");
-            content.add(buttonHome, 0, 8);
+            content.add(buttonHome, 0, 9);
             GridPane.setHalignment(buttonHome, HPos.CENTER);
             GridPane.setValignment(buttonHome, VPos.CENTER);
 
@@ -303,6 +317,7 @@ public class App extends Application {
               //Nodes/input
               titleRemove = new Label("Remove Class");
               labelDelete = new Label ("Please enter the details of the class you wish to remove.");
+              courseCode = new TextField("Course Code (eg. LM051)");
               moduleCode = new TextField("Module code (eg. CS4076)");
               dayOfWeek = new ChoiceBox();
               dayOfWeek.getItems().add("Monday");
@@ -347,7 +362,7 @@ public class App extends Application {
 
                         String[] startTimeSplit = startTime.getValue().toString().split(":");
                         String[] endTimeSplit = endTime.getValue().toString().split(":");
-                        String message = "1/"+ moduleCode.getText()+"/"+dayOfWeek.getValue()+"/"+startTimeSplit[0]+"/"+endTimeSplit[0]+"/"+roomCode.getText();
+                        String message = "1/"+ courseCode.getText() + "/" +moduleCode.getText()+"/"+dayOfWeek.getValue()+"/"+startTimeSplit[0]+"/"+endTimeSplit[0]+"/"+roomCode.getText();
                         out.println(message);
                         response = in.readLine();
                         label.setText(response);
@@ -432,50 +447,54 @@ public class App extends Application {
             content.add(labelDelete, 0, 1);
             GridPane.setHalignment(labelDelete, HPos.CENTER);
             GridPane.setValignment(labelDelete, VPos.CENTER);
+            
+            content.add(courseCode, 0, 2);
+            GridPane.setHalignment(courseCode, HPos.CENTER);
+            GridPane.setValignment(courseCode, VPos.CENTER);
 
-            content.add(moduleCode, 0, 2);
+            content.add(moduleCode, 0, 3);
             GridPane.setHalignment(moduleCode, HPos.CENTER);
             GridPane.setValignment(moduleCode, VPos.CENTER);
 
             chooseDay = new Label("Please choose the day the class will occur on.");
-            content.add(chooseDay, 0, 3);
+            content.add(chooseDay, 0, 4);
             GridPane.setHalignment(chooseDay, HPos.LEFT);
             GridPane.setValignment(chooseDay, VPos.CENTER);
 
-            content.add(dayOfWeek, 0, 3);
+            content.add(dayOfWeek, 0, 4);
             GridPane.setHalignment(dayOfWeek, HPos.RIGHT);
             GridPane.setValignment(dayOfWeek, VPos.CENTER);
 
             chooseStart = new Label("Please choose the time the class will START at.");
-            content.add(chooseStart, 0, 4);
+            content.add(chooseStart, 0, 5);
             GridPane.setHalignment(chooseStart, HPos.LEFT);
             GridPane.setValignment(chooseStart, VPos.CENTER);
 
-            content.add(startTime, 0, 4);
+            content.add(startTime, 0, 5);
             GridPane.setHalignment(startTime, HPos.RIGHT);
             GridPane.setValignment(startTime, VPos.CENTER);
 
             chooseEnd = new Label("Please choose the time the class will END at.");
-            content.add(chooseEnd, 0, 5);
+            content.add(chooseEnd, 0, 6);
             GridPane.setHalignment(chooseEnd, HPos.LEFT);
             GridPane.setValignment(chooseEnd, VPos.CENTER);
 
-            content.add(endTime, 0, 5);
+            content.add(endTime, 0, 6);
             GridPane.setHalignment(endTime, HPos.RIGHT);
             GridPane.setValignment(endTime, VPos.CENTER);
 
-            content.add(roomCode, 0, 6);
+            content.add(roomCode, 0, 7);
             GridPane.setHalignment(roomCode, HPos.CENTER);
             GridPane.setValignment(roomCode, VPos.CENTER);
 
             confirmRemove.setStyle("-fx-text-fill: #002633; -fx-border-color: #002633");
 
-            content.add(confirmRemove, 0, 7);
+            content.add(confirmRemove, 0, 8);
             GridPane.setHalignment(confirmRemove, HPos.CENTER);
             GridPane.setValignment(confirmRemove, VPos.CENTER);
 
             buttonHome.setStyle("-fx-background-color: #002633; -fx-text-fill: #ffffff; -fx-font-weight: bold");
-            content.add(buttonHome, 0, 8);
+            content.add(buttonHome, 0, 9);
             GridPane.setHalignment(buttonHome, HPos.CENTER);
             GridPane.setValignment(buttonHome, VPos.CENTER);
 
@@ -506,7 +525,7 @@ public class App extends Application {
            //Opening a new window for the selected action
            //Box with the necessary information
            titleDisplay = new Label("Display schedule");
-           labelDisplay = new Label ("ENTER CLASS CODE");
+           labelDisplay = new Label ("ENTER COURSE CODE");
            textFieldRoomDisplay = new TextField("");
            confirmDisplay = new Button ("Show schedule");
            Button buttonHome = new Button("Back to home");
@@ -528,7 +547,7 @@ public class App extends Application {
                @Override
                public void handle(ActionEvent t){
                     if(textFieldRoomDisplay.getText().trim().isEmpty()){
-                        label.setText("Please enter the class code !");
+                        label.setText("Please enter the course code!");
                     } else {
                         try
                         {
@@ -546,7 +565,7 @@ public class App extends Application {
                             if(foundClasses[0].equals("CLASS")){
 
                                 //A class or more has been found with this code
-                                label.setText("Displaying the schedule for the class " + classCode);
+                                label.setText("Displaying the schedule for the course " + classCode);
 
                                 GridPane gridPane = new GridPane();
                                 gridPane.setPadding(new Insets(10, 10, 10, 10)); // Padding around the grid
@@ -610,13 +629,13 @@ public class App extends Application {
                                 for(int i = 1; i < foundClasses.length; i ++){
                                     //We start at 1 because 0 is taken by "CLASS"
                                     String myClass[] = foundClasses[i].split("/");
-                                    String code = myClass[0];
+                                    String moduleCode = myClass[0];
                                     String room = myClass[1];
                                     int day = Integer.valueOf(myClass[2]);
                                     int startingTime = Integer.valueOf(myClass[3]);
                                     int endingTime = Integer.valueOf(myClass[4]);
 
-                                    Label myClassLabel = new Label(code + "\n(" + room + ")");
+                                    Label myClassLabel = new Label(moduleCode + "\n(" + room + ")");
                                     myClassLabel.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE); // Allow the label to expand fully
                                     GridPane.setFillWidth(myClassLabel, true); // Stretch label to fill cell width
                                     GridPane.setFillHeight(myClassLabel, true); // Stretch label to fill cell height
@@ -730,6 +749,192 @@ public class App extends Application {
 
 
         }});
+        
+        buttonEarlyLectures.setOnAction(new EventHandler<ActionEvent>(){
+        @Override
+          public void handle(ActionEvent t){
+              //Nodes/input
+              
+              titleEarlyLectures = new Label("Which course and day would you like to request early lectures for?");
+              courseCodeEarlyLectures = new TextField("Course Code eg. LM051");
+              earlyLecturesDay = new ChoiceBox();
+              earlyLecturesDay.getItems().add("Monday");
+              earlyLecturesDay.getItems().add("Tuesday");
+              earlyLecturesDay.getItems().add("Wednesday");
+              earlyLecturesDay.getItems().add("Thursday");
+              earlyLecturesDay.getItems().add("Friday");
+              //Iterate through to add all the valid start and end times to the ChoiceBox
+              Button buttonHome = new Button("Back to home");
+              confirmEarlyLectures = new Button("Confirm Early Lectures");
+              //Set the home button to return to the main window
+              buttonHome.setOnAction(new EventHandler<ActionEvent> (){
+
+                @Override
+                public void handle(ActionEvent t){
+                    stage.setScene(scene);
+                }
+
+            });
+
+
+            confirmEarlyLectures.setOnAction(new EventHandler<ActionEvent> () {
+
+               @Override
+               public void handle(ActionEvent t){
+                    try
+                    {
+                        
+                        BufferedReader in = new BufferedReader(new InputStreamReader(link.getInputStream()));
+                        PrintWriter out = new PrintWriter(link.getOutputStream(),true);
+
+                        String response;
+                        String message = "3/"+ courseCode.getText() + "/"+earlyLecturesDay.getValue();
+                        out.println(message);
+                        response = in.readLine();
+                        label.setText(response);
+
+
+                    }catch(IOException ex)
+                    {
+                        ex.printStackTrace();
+                    }
+                    finally
+                    {
+
+                    }
+                    Button buttonAddHome = new Button ("Back to home");
+            buttonAddHome.setOnAction(new EventHandler<ActionEvent> (){
+
+                @Override
+                public void handle(ActionEvent t){
+                    stage.setScene(scene);
+                }
+            });
+            GridPane content = new GridPane();
+
+            // Set the GridPane to expand and fill the available space, equalizing column widths
+            ColumnConstraints columnConstraintsContent = new ColumnConstraints();
+            columnConstraintsContent.setPercentWidth(100.0);
+            content.getColumnConstraints().addAll(columnConstraintsContent);
+
+            //Row constraints
+            RowConstraints rowConstraintsContent = new RowConstraints();
+            rowConstraintsContent.setPercentHeight(80.0 / 1);
+
+            content.getRowConstraints().addAll(rowConstraintsContent, rowConstraintsContent,
+                    rowConstraintsContent, rowConstraintsContent, rowConstraintsContent, rowConstraintsContent, rowConstraintsContent);
+
+            content.setPadding(new Insets(10, 10, 10, 10));
+
+            content.add(label, 0, 0);
+            GridPane.setHalignment(label, HPos.CENTER);
+            GridPane.setValignment(label, VPos.CENTER);
+
+            buttonAddHome.setStyle("-fx-background-color: #002633; -fx-text-fill: #ffffff; -fx-font-weight: bold");
+            content.add(buttonAddHome, 0, 1);
+            GridPane.setHalignment(buttonAddHome, HPos.CENTER);
+            GridPane.setValignment(buttonAddHome, VPos.CENTER);
+
+            BorderPane borderPane = new BorderPane();
+
+            borderPane.setPadding(new Insets(20, 80, 20, 80));
+
+            borderPane.setCenter(content);
+               var sceneConfirmAdd = new Scene(borderPane, 640, 480);
+               stage.setScene (sceneConfirmAdd);
+               }
+
+           });
+
+            GridPane content = new GridPane();
+
+            // Set the GridPane to expand and fill the available space, equalizing column widths
+            ColumnConstraints columnConstraintsContent = new ColumnConstraints();
+            columnConstraintsContent.setPercentWidth(100.0);
+            content.getColumnConstraints().addAll(columnConstraintsContent);
+
+            //Row constraints
+            RowConstraints rowConstraintsContent = new RowConstraints();
+            rowConstraintsContent.setPercentHeight(80.0 / 11);
+
+            content.getRowConstraints().addAll(rowConstraintsContent, rowConstraintsContent,
+                    rowConstraintsContent, rowConstraintsContent, rowConstraintsContent, rowConstraintsContent,
+                    rowConstraintsContent, rowConstraintsContent, rowConstraintsContent, rowConstraintsContent, rowConstraintsContent);
+
+            content.setPadding(new Insets(10, 10, 10, 10));
+
+            titleAdd.setStyle("-fx-text-fill: #002633; -fx-font-weight: bold; "
+                    + "-fx-font-size: 24px");
+
+            content.add(titleAdd, 0, 0);
+
+            GridPane.setHalignment(titleAdd, HPos.CENTER);
+            GridPane.setValignment(titleAdd, VPos.CENTER);
+
+            content.add(classLabel, 0, 1);
+            GridPane.setHalignment(classLabel, HPos.CENTER);
+            GridPane.setValignment(classLabel, VPos.CENTER);
+            
+            content.add(courseCode, 0, 2);
+            GridPane.setHalignment(courseCode, HPos.CENTER);
+            GridPane.setValignment(courseCode, VPos.CENTER);
+
+            content.add(moduleCode, 0, 3);
+            GridPane.setHalignment(moduleCode, HPos.CENTER);
+            GridPane.setValignment(moduleCode, VPos.CENTER);
+
+            chooseDay = new Label("Please choose the day the class will occur on.");
+            content.add(chooseDay, 0, 4);
+            GridPane.setHalignment(chooseDay, HPos.LEFT);
+            GridPane.setValignment(chooseDay, VPos.CENTER);
+
+            content.add(dayOfWeek, 0, 4);
+            GridPane.setHalignment(dayOfWeek, HPos.RIGHT);
+            GridPane.setValignment(dayOfWeek, VPos.CENTER);
+
+            chooseStart = new Label("Please choose the time the class will START at.");
+            content.add(chooseStart, 0, 5);
+            GridPane.setHalignment(chooseStart, HPos.LEFT);
+            GridPane.setValignment(chooseStart, VPos.CENTER);
+
+            content.add(startTime, 0, 5);
+            GridPane.setHalignment(startTime, HPos.RIGHT);
+            GridPane.setValignment(startTime, VPos.CENTER);
+
+            chooseEnd = new Label("Please choose the time the class will END at.");
+            content.add(chooseEnd, 0, 6);
+            GridPane.setHalignment(chooseEnd, HPos.LEFT);
+            GridPane.setValignment(chooseEnd, VPos.CENTER);
+
+            content.add(endTime, 0, 6);
+            GridPane.setHalignment(endTime, HPos.RIGHT);
+            GridPane.setValignment(endTime, VPos.CENTER);
+
+            content.add(roomCode, 0, 7);
+            GridPane.setHalignment(roomCode, HPos.CENTER);
+            GridPane.setValignment(roomCode, VPos.CENTER);
+
+            confirmAdd.setStyle("-fx-text-fill: #002633; -fx-border-color: #002633");
+
+            content.add(confirmAdd, 0,8);
+            GridPane.setHalignment(confirmAdd, HPos.CENTER);
+            GridPane.setValignment(confirmAdd, VPos.CENTER);
+
+            buttonHome.setStyle("-fx-background-color: #002633; -fx-text-fill: #ffffff; -fx-font-weight: bold");
+            content.add(buttonHome, 0, 9);
+            GridPane.setHalignment(buttonHome, HPos.CENTER);
+            GridPane.setValignment(buttonHome, VPos.CENTER);
+
+            BorderPane borderPane = new BorderPane();
+
+            borderPane.setPadding(new Insets(20, 100, 20, 100));
+
+            borderPane.setCenter(content);
+
+            var sceneAdd = new Scene(borderPane, 640, 480);
+            stage.setScene(sceneAdd);
+          }
+        });
 
         buttonQuit.setOnAction(new EventHandler<ActionEvent>(){
             @Override
@@ -744,7 +949,7 @@ public class App extends Application {
                     BufferedReader in = new BufferedReader(new InputStreamReader(link.getInputStream()));
                     PrintWriter out = new PrintWriter(link.getOutputStream(),true);
                     String response= null;
-                    out.println("3");
+                    out.println("4");
                     response = in.readLine();
                     if(response.equals("TERMINATE")){
                         try{
