@@ -361,7 +361,26 @@ public class App extends Application {
 
                         String[] startTimeSplit = startTime.getValue().toString().split(":");
                         String[] endTimeSplit = endTime.getValue().toString().split(":");
-                        String message = "1/"+ courseCode.getText() + "/" +moduleCode.getText()+"/"+dayOfWeek.getValue()+"/"+startTimeSplit[0]+"/"+endTimeSplit[0]+"/"+roomCode.getText();
+                        int dayNumber;
+                        String dayString = (String) dayOfWeek.getValue();
+                        switch(dayString){
+                            case "Monday":
+                                dayNumber = 1;
+                                break;
+                            case "Tuesday":
+                                dayNumber = 2;
+                                break;
+                            case "Wednesday":
+                                dayNumber = 3;
+                                break;
+                            case "Thursday":
+                                dayNumber = 4;
+                                break;
+                            default:
+                                dayNumber = 5;
+                                break;
+                        }
+                        String message = "1/"+ courseCode.getText() + "/" +moduleCode.getText()+"/"+dayNumber+"/"+startTimeSplit[0]+"/"+endTimeSplit[0]+"/"+roomCode.getText();
                         out.println(message);
                         response = in.readLine();
                         label.setText(response);

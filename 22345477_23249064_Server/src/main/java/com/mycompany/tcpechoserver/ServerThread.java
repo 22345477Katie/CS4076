@@ -82,6 +82,7 @@ public class ServerThread implements Runnable {
                 //Depending on the action coming from the client, do the thing
                 if(action.equals("add")){
                     TCPEchoServer.lockData();
+                    message="";
                     Thread.sleep(2000);
                   try{
                       //Figure out what day it is and make it an int for easier processing
@@ -133,7 +134,20 @@ public class ServerThread implements Runnable {
                                       ||(newEndTime>oldStartTime&&newEndTime<oldEndTime)){
                                           throw new IncorrectActionException("The requested class clashes with an existing class. Class not scheduled.");
                                   }
-                              }                                             
+                                //For two classes trying to be in the same classroom
+                              } else if(scheduledClass.getClass().equals(classes.get(i).getClass())
+                                      && scheduledClass.getDay()==classes.get(i).getDay()){
+                                  int newStartTime = scheduledClass.getStartingTime();
+                                  int newEndTime = scheduledClass.getEndingTime();
+                                  int oldStartTime = classes.get(i).getStartingTime();
+                                  int oldEndTime = classes.get(i).getEndingTime();
+                                  if(newStartTime==oldStartTime
+                                      ||newEndTime==oldEndTime
+                                      ||(newStartTime>oldStartTime&&newStartTime<oldEndTime)
+                                      ||(newEndTime>oldStartTime&&newEndTime<oldEndTime)){
+                                          throw new IncorrectActionException("The requested class clashes with an existing class. Class not scheduled.");
+                                  }
+                              }                                           
                           }
                           //if there are not too many modules and the class does not clash with any others, add it
                           classes.add(scheduledClass);
@@ -144,35 +158,20 @@ public class ServerThread implements Runnable {
                           moduleCodes.add(scheduledClass.getClassCode());
                           message = "The class was added to the schedule successfully.";
                       }
-                  }catch (IncorrectActionException e){
-                      message = e.getIncorrectActionException();
+                    }catch (IncorrectActionException e){
+                        message = e.getIncorrectActionException();
 
-                  }
-                  TCPEchoServer.unlockData();
+                    }
+                    TCPEchoServer.unlockData();
+                    out.println(message);     //Step 4.
                 }
 
                 if(action.equals("remove")){
                     TCPEchoServer.lockData();
+                    message="";
                     try{
                         //Figure out what day it is and make it an int for easier processing
-                        int day;
-                      switch (actionClient[3]) {
-                          case "Monday":
-                              day = 1;
-                              break;
-                          case "Tuesday":
-                              day = 2;
-                              break;
-                          case "Wednesday":
-                              day = 3;
-                              break;
-                          case "Thursday":
-                              day = 4;
-                              break;
-                          default:
-                              day = 5;
-                              break;
-                      }
+                        int day = Integer.valueOf(actionClient[3]);
                       //Create the Classes object
                       Classes scheduledClass = new Classes(actionClient[1], actionClient[2], day, Integer.parseInt(actionClient[4]), Integer.parseInt(actionClient[5]), actionClient[6]);
                       //No point in checking anything if there aren't any classes yet
@@ -198,13 +197,15 @@ public class ServerThread implements Runnable {
                     }catch(IncorrectActionException e){
                         message = e.getIncorrectActionException();
                     }
-                    
-                  TCPEchoServer.unlockData();
+                  
+                    TCPEchoServer.unlockData();
+                    out.println(message);     //Step 4.
                 }
 
                 if(action.equals("consult")){
                     TCPEchoServer.lockData();
-
+                    message="";
+                    out.println(message);
                     if(classes.isEmpty()){
                         out.println("The schedule is empty! Add a class first.");
                     } else if (actionClient.length < 1){
@@ -240,6 +241,7 @@ public class ServerThread implements Runnable {
                     message = "All applicable classes were moved to an earlier time slot"; 
                     
                     TCPEchoServer.unlockData();
+                    out.println(message);     //Step 4.
                 }
 
                 if(action.equals("quit")){
@@ -253,9 +255,9 @@ public class ServerThread implements Runnable {
                       System.out.println("Unable to disconnect!");
                       System.exit(1);
                  }
+                    out.println(message);     //Step 4.
                 }
 
-                out.println(message);     //Step 4.
             }
           }
           catch(IncorrectActionException e)
