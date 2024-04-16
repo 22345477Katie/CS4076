@@ -81,6 +81,8 @@ public class ServerThread implements Runnable {
 
                 //Depending on the action coming from the client, do the thing
                 if(action.equals("add")){
+                    TCPEchoServer.lockData();
+                    Thread.sleep(2000);
                   try{
                       //Figure out what day it is and make it an int for easier processing
                         int day;
@@ -145,10 +147,12 @@ public class ServerThread implements Runnable {
                   }catch (IncorrectActionException e){
                       message = e.getIncorrectActionException();
 
-                  }  
+                  }
+                  TCPEchoServer.unlockData();
                 }
 
                 if(action.equals("remove")){
+                    TCPEchoServer.lockData();
                     try{
                         //Figure out what day it is and make it an int for easier processing
                         int day;
@@ -194,16 +198,12 @@ public class ServerThread implements Runnable {
                     }catch(IncorrectActionException e){
                         message = e.getIncorrectActionException();
                     }
+                    
+                  TCPEchoServer.unlockData();
                 }
 
                 if(action.equals("consult")){
-
-                    //TEST
-                    //Classes classTest = new Classes("CS4076", 1, 9, 11, "CS2044");
-                    //classes.add(classTest);
-                    //
-                    
-                    //May need to restructure a little?
+                    TCPEchoServer.lockData();
 
                     if(classes.isEmpty()){
                         out.println("The schedule is empty! Add a class first.");
@@ -230,11 +230,16 @@ public class ServerThread implements Runnable {
                       }
                       out.println(schedule);
                     }
+                    
+                  TCPEchoServer.unlockData();
                 }
                 
                 if(action.equals("earlyLectures")){
+                    TCPEchoServer.lockData();
                     TCPEchoServer.setClasses(ForkJoinPool.commonPool().invoke(new EarlyThread.ThreadCreation(classes, actionClient[1])));
                     message = "All applicable classes were moved to an earlier time slot"; 
+                    
+                    TCPEchoServer.unlockData();
                 }
 
                 if(action.equals("quit")){
@@ -257,6 +262,8 @@ public class ServerThread implements Runnable {
           {
               System.out.println(e.getIncorrectActionException());
           } catch (IOException ex) {
+            Logger.getLogger(ServerThread.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
             Logger.getLogger(ServerThread.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
