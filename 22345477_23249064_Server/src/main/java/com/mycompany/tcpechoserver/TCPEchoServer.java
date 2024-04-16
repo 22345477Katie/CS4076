@@ -74,6 +74,4 @@ public class TCPEchoServer {
         System.out.println("Unlocking");
         lock.unlock();
     }
-  
-  
-} 
+}

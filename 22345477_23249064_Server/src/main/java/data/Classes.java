@@ -10,6 +10,7 @@ package data;
  */
 public class Classes {
     
+    String courseCode;
     String classCode;
     int day;
     int startingTime;
@@ -19,7 +20,8 @@ public class Classes {
     public Classes() {
     }
 
-    public Classes(String classCode, int day, int startingTime, int endingTime, String room) {
+    public Classes(String courseCode, String classCode, int day, int startingTime, int endingTime, String room) {
+        this.courseCode = courseCode;
         this.classCode = classCode;
         this.day = day;
         this.startingTime = startingTime;
@@ -33,6 +35,13 @@ public class Classes {
 
     public void setRoom(String room) {
         this.room = room;
+    }
+    
+    public String getCourseCode(){
+        return courseCode;
+    }
+    public void setCourseCode(String courseCode){
+        this.courseCode = courseCode;
     }
 
     public String getClassCode() {
