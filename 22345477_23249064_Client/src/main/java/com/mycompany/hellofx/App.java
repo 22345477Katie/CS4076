@@ -600,13 +600,12 @@ public class App extends Application {
 
                                 //Row constraints
                                 RowConstraints rowConstraints = new RowConstraints();
-                                rowConstraints.setPercentHeight(80.0 / 10); //Having 10 timeslots in a day
+                                rowConstraints.setPercentHeight(80.0 / 9); //Having 10 timeslots in a day
 
                                 gridPane.getRowConstraints().addAll(rowConstraints,
                                         rowConstraints, rowConstraints, rowConstraints,
                                         rowConstraints, rowConstraints, rowConstraints,
-                                        rowConstraints, rowConstraints, rowConstraints,
-                                        rowConstraints);
+                                        rowConstraints, rowConstraints, rowConstraints);
 
                                 // Days of the week headers
                                 String[] daysOfWeek = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
@@ -627,7 +626,7 @@ public class App extends Application {
                                 }
 
                                 // Time slots
-                                String[] timeSlots = {"9:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"};
+                                String[] timeSlots = {"9:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"};
                                 for (int i = 0; i < timeSlots.length; i++) {
                                     Label timeLabel = new Label(timeSlots[i]);
                                     timeLabel.setAlignment(Pos.CENTER); // Center align the text

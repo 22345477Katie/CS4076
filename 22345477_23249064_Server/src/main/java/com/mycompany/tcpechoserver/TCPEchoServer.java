@@ -53,7 +53,7 @@ public class TCPEchoServer {
         return classes;
     }
 
-    public static void setClasses(ArrayList<Classes> classes) {
+    public synchronized static void setClasses(ArrayList<Classes> classes) {
         TCPEchoServer.classes = classes;
     }
 
@@ -61,7 +61,7 @@ public class TCPEchoServer {
         return moduleCodes;
     }
 
-    public static void setModuleCodes(ArrayList<String> moduleCodes) {
+    public synchronized static void setModuleCodes(ArrayList<String> moduleCodes) {
         TCPEchoServer.moduleCodes = moduleCodes;
     }
     
