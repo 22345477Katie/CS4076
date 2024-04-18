@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.concurrent.TimeUnit;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -27,6 +28,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
+import javafx.concurrent.Task;
+
 
 
 /**
@@ -600,12 +603,13 @@ public class App extends Application {
 
                                 //Row constraints
                                 RowConstraints rowConstraints = new RowConstraints();
-                                rowConstraints.setPercentHeight(80.0 / 9); //Having 10 timeslots in a day
+                                rowConstraints.setPercentHeight(80.0 / 10); //Having 10 timeslots in a day
 
                                 gridPane.getRowConstraints().addAll(rowConstraints,
                                         rowConstraints, rowConstraints, rowConstraints,
                                         rowConstraints, rowConstraints, rowConstraints,
-                                        rowConstraints, rowConstraints, rowConstraints);
+                                        rowConstraints, rowConstraints, rowConstraints,
+                                        rowConstraints);
 
                                 // Days of the week headers
                                 String[] daysOfWeek = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
@@ -626,7 +630,7 @@ public class App extends Application {
                                 }
 
                                 // Time slots
-                                String[] timeSlots = {"9:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"};
+                                String[] timeSlots = {"9:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"};
                                 for (int i = 0; i < timeSlots.length; i++) {
                                     Label timeLabel = new Label(timeSlots[i]);
                                     timeLabel.setAlignment(Pos.CENTER); // Center align the text
@@ -787,75 +791,45 @@ public class App extends Application {
 
             });
 
-
-            confirmEarlyLectures.setOnAction(new EventHandler<ActionEvent> () {
-
-               @Override
-               public void handle(ActionEvent t){
-                    try
-                    {
-                        
+            Task<String> earlyLecturesTask = new Task<>() {
+                @Override
+                protected String call() throws Exception {
+                    //Simulate a long processing time
+                    TimeUnit.SECONDS.sleep(10);
+                    // Initialize server communication objects
+                    try {
                         BufferedReader in = new BufferedReader(new InputStreamReader(link.getInputStream()));
-                        PrintWriter out = new PrintWriter(link.getOutputStream(),true);
+                        PrintWriter out = new PrintWriter(link.getOutputStream(), true);
 
                         String response;
                         String message = "3/"+ courseCodeEarlyLectures.getText();
                         out.println(message);
-                        response = in.readLine();
-                        label.setText(response);
 
-
-                    }catch(IOException ex)
-                    {
-                        ex.printStackTrace();
+                        // Wait for and return the response
+                        return in.readLine();
+                    } catch (IOException ex) {
+                        // Handle exceptions if something goes wrong with I/O
+                        System.err.println("Error communicating with the server: " + ex.getMessage());
+                        throw ex;
                     }
-                    finally
-                    {
-
-                    }
-                    Button buttonAddHome = new Button ("Back to home");
-            buttonAddHome.setOnAction(new EventHandler<ActionEvent> (){
-
-                @Override
-                public void handle(ActionEvent t){
-                    stage.setScene(scene);
                 }
+            };
+  
+
+            confirmEarlyLectures.setOnAction(event -> {
+                // Start the task
+                new Thread(earlyLecturesTask).start();
+                //Back to homepage to keep working on other things
+                stage.setScene(scene);
+
+                // Bind task's status to UI components
+                earlyLecturesTask.setOnSucceeded(e -> {
+                    Toast.showToast("Early lectures scheduled successfully!");
+                });
+                earlyLecturesTask.setOnFailed(e -> {
+                    Toast.showToast("Failed to schedule early lectures.");
+                });
             });
-            GridPane content = new GridPane();
-
-            // Set the GridPane to expand and fill the available space, equalizing column widths
-            ColumnConstraints columnConstraintsContent = new ColumnConstraints();
-            columnConstraintsContent.setPercentWidth(100.0);
-            content.getColumnConstraints().addAll(columnConstraintsContent);
-
-            //Row constraints
-            RowConstraints rowConstraintsContent = new RowConstraints();
-            rowConstraintsContent.setPercentHeight(80.0 / 2);
-
-            content.getRowConstraints().addAll(rowConstraintsContent, rowConstraintsContent,
-                    rowConstraintsContent, rowConstraintsContent, rowConstraintsContent, rowConstraintsContent, rowConstraintsContent);
-
-            content.setPadding(new Insets(10, 10, 10, 10));
-
-            content.add(label, 0, 0);
-            GridPane.setHalignment(label, HPos.CENTER);
-            GridPane.setValignment(label, VPos.CENTER);
-
-            buttonAddHome.setStyle("-fx-background-color: #002633; -fx-text-fill: #ffffff; -fx-font-weight: bold");
-            content.add(buttonAddHome, 0, 1);
-            GridPane.setHalignment(buttonAddHome, HPos.CENTER);
-            GridPane.setValignment(buttonAddHome, VPos.CENTER);
-
-            BorderPane borderPane = new BorderPane();
-
-            borderPane.setPadding(new Insets(20, 80, 20, 80));
-
-            borderPane.setCenter(content);
-               var sceneConfirmAdd = new Scene(borderPane, 640, 480);
-               stage.setScene (sceneConfirmAdd);
-               }
-
-           });
 
             GridPane content = new GridPane();
 
