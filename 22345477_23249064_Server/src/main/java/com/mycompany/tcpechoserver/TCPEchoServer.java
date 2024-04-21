@@ -20,13 +20,14 @@ public class TCPEchoServer {
   private static final int PORT = 1234;
   private static int clientConnections = 0;
   private static ArrayList<Classes> classes;
-  private static ArrayList<String> moduleCodes;
   private static final Lock lock = new ReentrantLock();
 
   public static void main(String[] args) {
         System.out.println("Opening port...\n");
         classes = new ArrayList<>();
-        moduleCodes = new ArrayList<>();
+        classes.add(new Classes("LM051", "C4115", 1, 11, 13, "CSG001"));
+        classes.add(new Classes("LM051", "C4006", 1, 9, 10, "CSG001"));
+        classes.add(new Classes("LM051", "C4815", 1, 15, 18, "CSG001"));
         try {
             servSock = new ServerSocket(PORT); // Step 1.
             while (true) { // This loop waits for and handles new connections continuously.
@@ -55,14 +56,6 @@ public class TCPEchoServer {
 
     public static void setClasses(ArrayList<Classes> classes) {
         TCPEchoServer.classes = classes;
-    }
-
-    public static ArrayList<String> getModuleCodes() {
-        return moduleCodes;
-    }
-
-    public static void setModuleCodes(ArrayList<String> moduleCodes) {
-        TCPEchoServer.moduleCodes = moduleCodes;
     }
     
     public static void lockData(){
